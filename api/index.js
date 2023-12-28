@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -11,7 +12,7 @@ const fs = require('fs');
 const { error } = require('console');
 const port = 3000;
 const app = express();
-const jwtpassword = 'secret';
+const jwtpassword = process.env.JWT_SECREAT;
 const salt = bcrypt.genSaltSync(10);
 const uploadMiddleware = multer({dest: 'uploads/'});
 
@@ -23,7 +24,7 @@ app.use('/uploads', express.static(__dirname + '/uploads'));
 
 //@dev connect to Mongoose DB.
 try{
-    mongoose.connect('mongodb+srv://pratikjaslofficial:xOxMzjc7gRMDBqz1@cluster0.zgqgijh.mongodb.net/');
+    mongoose.connect(`mongodb+srv://${process.env.MONGO_URL}`);
     console.log('MongoDB Connected Successfully');
 }catch(error){
     console.log('Error Connecting with MongoDB:',error);
