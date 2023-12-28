@@ -1,4 +1,4 @@
-#My BLOG WEBSITE
+# My BLOG WEBSITE
 
  My Blog is a platform that allows users to create, edit, and share blog posts. It provides a user-friendly interface for managing posts and engaging with content. The application is developed with a focus on simplicity and flexibility using the MERN stack.
 
@@ -23,25 +23,25 @@
   his/her post.
 
 # Installation 📌
-To run the application locally,
- 1. clone the repo. 
- 2. install the needed dependencies.
- 3. run your server and client.
+  To run the application locally,
+    1. clone the repo. 
+    2. install the needed dependencies.
+    3. run your server and client.
 
 # Technology Stack 📌 
 
  **Frontend:**
-  - React
-  - Bootstrap
+    - React
+    - Bootstrap
 
  **Backend:**
-  - Node.js
-  - Express.js
-  - MongoBD (with Mongoose)
+    - Node.js
+    - Express.js
+    - MongoBD (with Mongoose)
 
  **Authentication:**
-  - JSON Web Tokens (JWT)
+    - JSON Web Tokens (JWT)
 
  **Other Tools:**
-  - Git and GitHub for version control
-  - Nodemon for development server
+    - Git and GitHub for version control
+    - Nodemon for development server
