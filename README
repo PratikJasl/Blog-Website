@@ -1,0 +1,47 @@
+# My BLOG WEBSITE
+
+ My Blog is a platform that allows users to create, edit, and share blog posts. It provides a user-friendly interface for managing posts and engaging with content. The application is developed with a focus on simplicity and flexibility using the MERN stack.
+
+# Features 📌
+
+ - **User Authentication:** Secure user authentication and authorization.
+ - **Create and Edit Posts:** Users can create new blog posts and edit existing ones.
+ - **Rich Text Editor:** A rich text editor for creating content with formatting options.
+ - **Responsive Design:** A responsive design for seamless user experience across devices.
+
+# Description 📌
+
+ - This project is called My Blog, and it allows users to share there knowledge 
+  through blog posts.
+ - The app ensures user authentication using the JWT and mongoose.
+ - Users can register to the app using a unique username and a password of min 8 characters. 
+ - Once Registered the users have access to create and Edit posts.
+ - The users can create posts using the editor provided in the app, the can add images, links 
+  and more.
+ - All the data regarding the post is stored in the MONGODB. 
+ - The user can read all the posts created by different users, but only the author can edit 
+  his/her post.
+
+# Installation 📌
+To run the application locally,
+ 1. clone the repo. 
+ 2. install the needed dependencies.
+ 3. run your server and client.
+
+# Technology Stack 📌 
+
+ **Frontend:**
+  - React
+  - Bootstrap
+
+ **Backend:**
+  - Node.js
+  - Express.js
+  - MongoBD (with Mongoose)
+
+ **Authentication:**
+  - JSON Web Tokens (JWT)
+
+ **Other Tools:**
+  - Git and GitHub for version control
+  - Nodemon for development server
