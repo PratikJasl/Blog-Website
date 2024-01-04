@@ -11,7 +11,7 @@ const multer  = require('multer');
 const bodyParser = require('body-parser');
 const fs = require('fs');
 const { error } = require('console');
-const port = 3000;
+const port = process.env.PORT;
 const app = express();
 const jwtpassword = process.env.JWT_SECREAT;
 const salt = bcrypt.genSaltSync(10);
@@ -19,7 +19,7 @@ const ADMIN_ID = '6590f6efa6d16c1dc4032485';
 const uploadMiddleware = multer({dest: 'uploads/'});
 
 //@dev middle-wares.
-app.use(cors({credentials:true,origin:'https://myblog-v1-api.vercel.app/'}));
+app.use(cors({credentials:true,origin:'https://myblog-v1-client.vercel.app'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
@@ -271,6 +271,6 @@ app.use((error,req,res,next)=>{
     next();
 })
 
-app.listen(port, ()=>{
-    console.log(`Server Listening on port ${port}`);
+app.listen(port || 3000, ()=>{
+    console.log(`Server Listening on port ${port || 3000}`);
 })
