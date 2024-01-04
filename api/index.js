@@ -19,7 +19,7 @@ const ADMIN_ID = '6590f6efa6d16c1dc4032485';
 const uploadMiddleware = multer({dest: 'uploads/'});
 
 //@dev middle-wares.
-app.use(cors({credentials:true,origin:'http://localhost:5173'}));
+app.use(cors({credentials:true,origin:'https://myblog-v1-api.vercel.app/'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
