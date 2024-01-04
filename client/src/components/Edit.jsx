@@ -32,6 +32,7 @@ function Edit(){
     const [files, setFiles] = useState('');
     const [author, setAuthor] = useState('');
     const [redirect, setRedirect] = useState(false);
+    const [dredirect, setDredirect] = useState(false);
 
     useEffect(() => {
         fetch('http://localhost:3000/post/'+id)
@@ -49,6 +50,7 @@ function Edit(){
         try{
             ev.preventDefault();
             const data = new FormData();
+            data.set('_id', id);
             data.set('title', title);
             data.set('summary', summary);
             data.set('author',author);
@@ -74,8 +76,36 @@ function Edit(){
         }
     }
 
+    async function deletePost(ev){
+        try{
+            ev.preventDefault();
+            const response = await fetch('http://localhost:3000/delete',
+            {
+                method: 'POST',
+                body: JSON.stringify({ PostId: id }),
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if(response.ok){
+                alert('Post Deleted');
+                setDredirect(true);
+            }
+            else{
+                alert('Error Deleting Post, Please try again');
+            }
+        }catch(error){
+            console.log('Error Occured while Deleting Post');
+            alert('Error Deleting Post, Please try again');
+        }
+    }
+
     if (redirect) {
         return <Navigate to={'/post/'+id} />
+    }
+    if (dredirect){
+        return <Navigate to={'/'} />
     }
 
     return(
@@ -106,7 +136,11 @@ function Edit(){
                             onChange={newValue => setContent(newValue)}/>
 
                 <button>Update Post</button>
+                <button className='delete-btn'type = 'button'onClick={deletePost}>
+                    Delete Post
+                </button>
             </form>
+            
         </main>
     )
 }

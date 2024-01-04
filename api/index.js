@@ -8,12 +8,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
 const multer  = require('multer');
+const bodyParser = require('body-parser');
 const fs = require('fs');
 const { error } = require('console');
 const port = 3000;
 const app = express();
 const jwtpassword = process.env.JWT_SECREAT;
 const salt = bcrypt.genSaltSync(10);
+const ADMIN_ID = '6590f6efa6d16c1dc4032485';
 const uploadMiddleware = multer({dest: 'uploads/'});
 
 //@dev middle-wares.
@@ -21,6 +23,7 @@ app.use(cors({credentials:true,origin:'http://localhost:5173'}));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
+
 
 //@dev connect to Mongoose DB.
 try{
@@ -101,12 +104,14 @@ app.post('/logout', (req,res)=>{
 //------------------------ Create Post Endpoint -----------------------------------
 app.post('/post', uploadMiddleware.single('file'), async(req, res)=>{
     try{
-        const {originalname, path} = req.file;
-        const parts = originalname.split('.');
-        const ext = parts[parts.length-1];
-        const newPath = path+'.'+ext;
-        fs.renameSync(path, newPath);
-
+        let newPath
+        if (req.file) {
+            const {originalname, path} = req.file;
+            const parts = originalname.split('.');
+            const ext = parts[parts.length-1];
+            newPath = path+'.'+ext;
+            fs.renameSync(path, newPath);
+        }
         const {token} = req.cookies;
         jwt.verify(token, jwtpassword, {}, async (error,info) => {
             if (error){
@@ -115,12 +120,12 @@ app.post('/post', uploadMiddleware.single('file'), async(req, res)=>{
             }else{
                 const {title,summary,content,author, author_id} = req.body;
                 const postData = await postModel.create({
-                title,
-                summary,
-                content,
-                cover:newPath,
-                author: author,
-                author_id: author_id
+                    title,
+                    summary,
+                    content,
+                    cover:newPath,
+                    author: author,
+                    author_id: author_id
                 });
                 res.json(postData);
             }
@@ -163,35 +168,46 @@ app.put('/post',uploadMiddleware.single('file') ,async(req,res)=>{
     try{
         let newPath = null;
         if (req.file) {
-        const {originalname,path} = req.file;
-        const parts = originalname.split('.');
-        const ext = parts[parts.length - 1];
-        newPath = path+'.'+ext;
-        fs.renameSync(path, newPath);
+            const {originalname,path} = req.file;
+            const parts = originalname.split('.');
+            const ext = parts[parts.length - 1];
+            newPath = path+'.'+ext;
+            fs.renameSync(path, newPath);
         }
         const {token} = req.cookies;
         jwt.verify(token, jwtpassword, {}, async (error,info) => {
+            
             if (error){
                 console.log('Error verifying token:', error);
                 res.status(500).json({ msg: 'Internal Server Error' });
             }else{
-                console.log('Request Body:', req.body);
-                const {title,summary,content,author,author_id} = req.body;
-                const postData = await postModel.findOne({author_id});
-                console.log('Post Data:', postData);
+                const {title,summary,content,author,author_id, _id} = req.body;
+                const postData = await postModel.findOne({_id});
                 const isAuthor = JSON.stringify(postData.author_id) === JSON.stringify(info.id);
-                if(!isAuthor){
-                    return res.status(400).json({msg:'Only the Author Can Update Post'});
+                const isAdmin = ADMIN_ID === info.id;
+                if(!(isAuthor || isAdmin)){
+                    return res.status(400).json({msg:'Only the Author/Admin Can Update Post'});
                 }
-                await postModel.updateOne({ author_id},{
-                    title,
-                    summary,
-                    content,
-                    cover: newPath ? newPath : postData.cover,
-                    author: author,
-                    author_id: author_id
-                });
-                res.json(postData);
+                if(isAdmin){
+                    await postModel.updateOne({ _id},{
+                        title,
+                        summary,
+                        content,
+                        cover: newPath ? newPath : postData.cover,
+                    });
+                    res.json(postData);
+                }
+                else{
+                    await postModel.updateOne({ _id},{
+                        title,
+                        summary,
+                        content,
+                        cover: newPath ? newPath : postData.cover,
+                        author: author,
+                        author_id: author_id
+                    });
+                    res.json(postData);
+                } 
             }
         });
     }catch(error){
@@ -200,6 +216,55 @@ app.put('/post',uploadMiddleware.single('file') ,async(req,res)=>{
     }   
 }); 
 
+// ------------------------ End Point To Delete Post ----------------------------------
+app.post('/delete',bodyParser.json(), (req,res)=>{
+    try{
+        const {token} = req.cookies;
+        const {PostId} = req.body;
+        console.log(PostId);
+        if(token){
+            jwt.verify(token, jwtpassword, {}, async (error,info) => {
+                if (error){
+                    console.log('Error verifying token:', error);
+                    res.status(500).json({ msg: 'Internal Server Error' });
+                }else{
+                    const postData = await postModel.findOne({_id: PostId});
+                    const isAuthor = JSON.stringify(postData.author_id) === JSON.stringify(info.id);
+                    const isAdmin = ADMIN_ID === info.id;
+                    if(!(isAuthor || isAdmin)){
+                        return res.status(400).json({msg:'Only the Author/Admin Can Update Post'});
+                    }
+                    await postModel.deleteOne({_id: PostId});
+                    const jsonString = JSON.stringify(postData, (key, value) => {
+                        if (typeof value === 'string') {
+                            return value.replace(/\\/g, '/');
+                        }
+                        return value;
+                    });
+                    const Data = JSON.parse(jsonString);
+                    const {cover} = Data;
+                    fs.unlink(cover, (err) => {
+                        if (err) {
+                          console.error(`Error deleting file: ${err.message}`);
+                        } else {
+                          console.log('File deleted successfully');
+                        }
+                      });
+                    res.status(200).json({msg: 'Post Deleted'}); 
+                }
+            });
+        }
+        else{
+            res.status(404).json({msg: 'Authorization not provided'});
+        }   
+        
+    }
+    catch(error){
+        console.log('error deleting post:',error);
+        res.status(400).json({msg:'Error Deleting Post'});
+    }     
+});
+        
 app.use((error,req,res,next)=>{
     console.log('Internal Server Error:',error);
     res.status(500).json({msg:'Internal server eror'});

@@ -80,8 +80,13 @@ div.post p.summary{
     margin:10px 0;
     line-height: 1.8rem;
 }
+p.text {
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
+}
 
-/* ----------- Login&Register Page CSS -------- */
+/* ----------- Login & Register Page CSS -------- */
 form.Login, form.Register{
     max-width: 400px;
     margin: 0 auto;
@@ -127,11 +132,23 @@ form.Login1 input{
     background-color: #fff;
 }
 
+form.Login1 button.delete-btn{
+    cursor: pointer;
+    width: 100%;
+    display: block;
+    background-color: rgb(204, 6, 6);
+    border:0;
+    color: #fff;
+    border-radius: 5px;
+    padding: 7px 0;
+    margin-top: 10px;
+}
+
 form.Login1 button{
     cursor: pointer;
     width: 100%;
     display: block;
-    background-color: #555;
+    background-color: #3871ff;
     border:0;
     color: #fff;
     border-radius: 5px;

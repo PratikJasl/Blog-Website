@@ -3,7 +3,7 @@ import { UserContext } from '../UserContext';
 import { useParams } from "react-router-dom";
 import {formatISO9075} from "date-fns";
 import { Link } from "react-router-dom";
-
+const ADMIN_ID = '6590f6efa6d16c1dc4032485';
 function Postpage(){
 
     const [postData,setPostData] = useState(null);
@@ -25,7 +25,7 @@ function Postpage(){
                 <h2>No Post Information</h2>
             </main>
         )
-    }
+    }   
 
     return(
         <main>
@@ -35,7 +35,7 @@ function Postpage(){
                 <div className="author-post">
                     <a >By @{postData.author}</a>
                 </div>
-                {userInfo && userInfo.id === postData.author_id && (
+                {((userInfo && userInfo.id === postData.author_id) || (userInfo && userInfo.id === ADMIN_ID)) && (
                     <div className="edit-row">
                         <Link className="edit-btn" to={`/edit/${postData._id}`}>
                             Edit this post
