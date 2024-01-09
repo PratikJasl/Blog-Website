@@ -11,7 +11,7 @@ function Postpage(){
     const {id} = useParams();
 
     useEffect(() => {
-        fetch(`http://localhost:3000/post/${id}`)
+        fetch(`https://myblog-v1-api.vercel.app/post/${id}`)
           .then(response => {
             response.json().then(postData => {
               setPostData(postData);
@@ -43,7 +43,7 @@ function Postpage(){
                     </div>
                 )}
                 <div className="image">
-                    <img src={`http://localhost:3000/${postData.cover}`} alt="image" />
+                    <img src={`https://myblog-v1-api.vercel.app/${postData.cover}`} alt="image" />
                 </div>
                 <div className="content" dangerouslySetInnerHTML={{__html:postData.content}} />
             </div>
