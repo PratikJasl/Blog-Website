@@ -11,7 +11,7 @@ function Navigation(){
   const {setUserInfo, userInfo} = useContext(UserContext);
   
   useEffect(()=>{
-    fetch('https://myblog-v1-5m2olno86-pratik-jussals-projects.vercel.app/profile',{
+    fetch('https://myblog-v1-api.vercel.app/profile',{
       credentials: 'include',
     }).then(response => {
         response.json().then(userInfo => {
@@ -21,7 +21,7 @@ function Navigation(){
   },[]);
 
   function logout(){
-    fetch('https://myblog-v1-5m2olno86-pratik-jussals-projects.vercel.app/logout',{
+    fetch('https://myblog-v1-api.vercel.app/logout',{
       method: 'POST',
       credentials: 'include'
     });

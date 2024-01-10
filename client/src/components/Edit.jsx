@@ -35,7 +35,7 @@ function Edit(){
     const [dredirect, setDredirect] = useState(false);
 
     useEffect(() => {
-        fetch('https://myblog-v1-5m2olno86-pratik-jussals-projects.vercel.app/post/'+id)
+        fetch('https://myblog-v1-api.vercel.app/post/'+id)
           .then(response => {
             response.json().then(postInfo => {
               setTitle(postInfo.title);
@@ -59,7 +59,7 @@ function Edit(){
             if (files?.[0]) {
                 data.set('file', files?.[0]);
             }
-            const response = await fetch('https://myblog-v1-5m2olno86-pratik-jussals-projects.vercel.app/post', {
+            const response = await fetch('https://myblog-v1-api.vercel.app/post', {
                 method: 'PUT',
                 body: data,
                 credentials: 'include'
@@ -79,7 +79,7 @@ function Edit(){
     async function deletePost(ev){
         try{
             ev.preventDefault();
-            const response = await fetch('https://myblog-v1-5m2olno86-pratik-jussals-projects.vercel.app/delete',
+            const response = await fetch('https://myblog-v1-api.vercel.app/delete',
             {
                 method: 'POST',
                 body: JSON.stringify({ PostId: id }),

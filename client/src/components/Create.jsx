@@ -42,7 +42,7 @@ function Create(){
             data.set('content',content);
             data.set('file',files[0]);
         
-            const response = await fetch('https://myblog-v1-5m2olno86-pratik-jussals-projects.vercel.app/post', {
+            const response = await fetch('https://myblog-v1-api.vercel.app/post', {
                 method: 'POST',
                 body: data,
                 credentials: 'include'
