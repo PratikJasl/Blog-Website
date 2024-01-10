@@ -33,6 +33,11 @@ try{
     console.log('Error Connecting with MongoDB:',error);
 }
 
+//------------------Root End Point -----------------------------------
+app.get('/', (req,res)=>{
+    res.send('Hello, Server is Listening');
+});
+
 //------------------Register End Point --------------------------------
 app.post('/register',async(req,res)=>{
     const {username, password} = req.body;

@@ -7,7 +7,7 @@ function Home(){
     const [postData, setPostData] = useState(true);
     useEffect(()=>{
         try{
-            fetch('https://myblog-v1-api.vercel.app/post').then(response => {
+            fetch('https://myblog-v1-5m2olno86-pratik-jussals-projects.vercel.app/post').then(response => {
             response.json().then(posts =>{
                 setPosts(posts);
                 setPostData(posts.length > 0);
