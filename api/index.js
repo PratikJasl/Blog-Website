@@ -24,7 +24,6 @@ app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
 
-
 //@dev connect to Mongoose DB.
 try{
     mongoose.connect(`mongodb+srv://${process.env.MONGO_URL}`);
