@@ -35,7 +35,9 @@ function Edit(){
     const [dredirect, setDredirect] = useState(false);
 
     useEffect(() => {
-        fetch('https://myblog-v1-api.vercel.app/post/'+id)
+        fetch('https://myblog-v1-api.vercel.app/post/'+id,{
+            credentials: 'include'
+        })
           .then(response => {
             response.json().then(postInfo => {
               setTitle(postInfo.title);

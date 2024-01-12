@@ -11,7 +11,12 @@ function Postpage(){
     const {id} = useParams();
 
     useEffect(() => {
-        fetch(`https://myblog-v1-api.vercel.app/post/${id}`)
+        fetch(`https://myblog-v1-api.vercel.app/post/${id}`,{
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
           .then(response => {
             response.json().then(postData => {
               setPostData(postData);

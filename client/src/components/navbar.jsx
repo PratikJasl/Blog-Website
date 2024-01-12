@@ -13,6 +13,10 @@ function Navigation(){
   useEffect(()=>{
     fetch('https://myblog-v1-api.vercel.app/profile',{
       credentials: 'include',
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     }).then(response => {
         response.json().then(userInfo => {
         setUserInfo(userInfo);

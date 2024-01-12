@@ -20,7 +20,7 @@ const uploadMiddleware = multer({dest: 'uploads/'});
 
 //@dev middle-wares.
 app.use(cors({
-    origin:['https://myblog-v1-client.vercel.app'],
+    origin:['https://myblog-v1-client.vercel.app','*'],
     credentials:true
 }));
 app.use(express.json());
@@ -95,6 +95,13 @@ app.get('/profile', (req,res)=>{
         }
 
         const verify = jwt.verify(token, jwtpassword, {});
+        res.setHeader('Access-Control-Allow-Origin', 'https://myblog-v1-client.vercel.app');
+        res.setHeader('Access-Control-Allow-Credentials', true);
+        res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+        res.setHeader(
+          'Access-Control-Allow-Headers',
+          'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+        )
         res.json(verify);
     }
     catch(error){
@@ -153,6 +160,8 @@ app.get('/post',async (req,res)=>{
             }
             return value;
         });
+        res.header('Access-Control-Allow-Origin', 'https://myblog-v1-client.vercel.app');
+        res.header('Access-Control-Allow-Credentials', true);
         res.json(JSON.parse(jsonString));
     }catch(error){
         console.log('Error Getting Post Data:',error);
