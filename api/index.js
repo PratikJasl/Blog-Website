@@ -20,12 +20,17 @@ const uploadMiddleware = multer({dest: 'uploads/'});
 
 //@dev middle-wares.
 app.use(cors({
-    origin:['https://myblog-v1-client.vercel.app','*'],
-    credentials:true
+    origin:'https://myblog-v1-client.vercel.app',
+    credentials:true,
 }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(__dirname + '/uploads'));
+// app.options('*', (req, res) => {
+//     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     res.status(200).send();
+// });
 
 //@dev connect to Mongoose DB.
 try{
@@ -37,7 +42,7 @@ try{
 
 //------------------Root End Point -----------------------------------
 app.get('/', (req,res)=>{
-    res.send('Hello, Server is Listening');
+    res.send('Hello, Its me');
 });
 
 //------------------Register End Point --------------------------------
@@ -62,18 +67,27 @@ app.post('/register',async(req,res)=>{
 
 //-------------------End Point For Login---------------------
 app.post('/login', async(req,res)=>{
+    console.log("Reached line 71");
     const {username, password} = req.body;
     try{
+        console.log("Reached line 74");
         const userData = await userModel.findOne({username});
+        console.log("Reached line 76");
         const passOk = bcrypt.compareSync(password,userData.password);
+        console.log("Reached line 78");
+        console.log("Pass OK is:",passOk);
         if(passOk){
-            //@dev once the user is verified we create a JWT token and send it the browser in cookies.
+            //@dev once the user is verified we create a JWT token and send it to the browser in cookies.
             jwt.sign({username,id:userData._id},jwtpassword,{},(error,token) => {
-                if (error) throw error;
-                res.cookie('token',token).json({
+                if (error){
+                    console.log("Failed to sign JWT");
+                    throw error;
+                } 
+                res.cookie('token',token, {secure: true, sameSite: 'none'}).json({
                     id: userData._id,
                     username
                 });
+                console.log(`token in ${token}`);
             });
         }else{
             console.log('Login Failed, Wrong credentials');
@@ -95,13 +109,13 @@ app.get('/profile', (req,res)=>{
         }
 
         const verify = jwt.verify(token, jwtpassword, {});
-        res.setHeader('Access-Control-Allow-Origin', 'https://myblog-v1-client.vercel.app');
-        res.setHeader('Access-Control-Allow-Credentials', true);
-        res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
-        res.setHeader(
-          'Access-Control-Allow-Headers',
-          'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-        )
+        // res.setHeader('Access-Control-Allow-Origin', 'https://myblog-v1-client.vercel.app');
+        // res.setHeader('Access-Control-Allow-Credentials', true);
+        // res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT')
+        // res.setHeader(
+        //   'Access-Control-Allow-Headers',
+        //   'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+        // )
         res.json(verify);
     }
     catch(error){
@@ -127,6 +141,7 @@ app.post('/post', uploadMiddleware.single('file'), async(req, res)=>{
             fs.renameSync(path, newPath);
         }
         const {token} = req.cookies;
+        console.log('token received is:',token);
         jwt.verify(token, jwtpassword, {}, async (error,info) => {
             if (error){
                 console.log('Error verifying token:', error);
@@ -259,13 +274,16 @@ app.post('/delete',bodyParser.json(), (req,res)=>{
                     });
                     const Data = JSON.parse(jsonString);
                     const {cover} = Data;
-                    fs.unlink(cover, (err) => {
-                        if (err) {
-                          console.error(`Error deleting file: ${err.message}`);
-                        } else {
-                          console.log('File deleted successfully');
-                        }
-                      });
+                    if(cover){
+                        fs.unlink(cover, (err) => {
+                            if (err) {
+                              console.error(`Error deleting file: ${err.message}`);
+                            } else {
+                              console.log('File deleted successfully');
+                            }
+                        });
+                    }
+
                     res.status(200).json({msg: 'Post Deleted'}); 
                 }
             });
