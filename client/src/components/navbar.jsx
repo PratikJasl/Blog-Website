@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../UserContext';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 
 function Navigation(){
 
@@ -37,7 +38,7 @@ function Navigation(){
   return(
     <Navbar expand="lg" className="navbar-custom" data-bs-theme="light" fixed="top">
       <Container>
-        <Navbar.Brand as={Link} to='/' className="me-auto">My Blog</Navbar.Brand>
+        <Navbar.Brand as={Link} to='/' className="me-auto"><i className="bi bi-house-fill"/> My Blog</Navbar.Brand>
         <Navbar.Toggle 
           aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
